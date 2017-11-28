@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -18,15 +19,7 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = '/home';
-
     /**
      * Create a new controller instance.
      *
@@ -35,5 +28,77 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    public function login(Request $request)
+    {
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
+        }else{
+            return $this->sendFailedLoginResponse($request);
+        }
+    }
+    protected function attemptLogin(Request $request)
+    {
+        return $this->guard()->attempt($this->credentials($request), $request->has('remember'));
+    }
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return $request->only($this->username(), 'password');
+    }
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+        return $this->authenticated($request, $this->guard()->user())
+            ?: redirect()->intended($this->redirectTo);
+    }
+    /**
+     * The user has been authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        //
+    }
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        return redirect()->back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors([
+                $this->username() => "Error Uusario Incorrecto ¡¡ ",
+            ]);
+    }
+    public function username()
+    {
+        return 'user';
+    }
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        return redirect('/');
+    }
+    protected function guard()
+    {
+        return Auth::guard();
     }
 }
