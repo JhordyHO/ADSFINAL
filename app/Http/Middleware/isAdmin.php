@@ -15,7 +15,7 @@ class isAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(auth()->user()  == 1){
+        if(auth()->user()->Persona->idRoles  == 1){
             return $next($request);
         }else{
             return redirect('/')->with('error','Acceso denegado');

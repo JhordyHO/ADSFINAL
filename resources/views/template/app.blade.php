@@ -272,6 +272,6 @@ p-daterangepicker -->
 <script src="recursos/js/sweetalert2.js" type="text/javascript"></script>
 <!-- jquery.inputmask -->
 <script src="recursos/vendors/jquery.inputmask/dist/min/jquery.inputmask.bundle.min.js" type="text/javascript"></script>
-
+@yield('script')
 </body>
 </html>

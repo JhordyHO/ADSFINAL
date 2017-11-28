@@ -17,4 +17,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::post('mobiliario/create', 'MobiliarioController@store');
+Route::group(['middleware' => ['isAdmin']], function () {
+    Route::get('mobiliario', 'MobiliarioController@index');
+
+});
+
+//--------------------------------- test ------------
+Route::get('session',function(){
+    return session()->all();
+});

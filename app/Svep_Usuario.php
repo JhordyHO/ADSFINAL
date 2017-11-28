@@ -14,7 +14,7 @@ class Svep_Usuario extends Model implements AuthenticatableContract
     public $timestamps  = false ;
 
     public function Persona(){
-        return $this->belongsTo('App\...','idPersona');
+        return $this->belongsTo('App\Svep_Persona','idPersona');
     }
 
 }
